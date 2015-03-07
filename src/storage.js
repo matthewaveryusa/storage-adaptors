@@ -2,12 +2,20 @@
 var fs = require('fs'),
   crypto = require('crypto');
 
+function StorageError(status,errorCode) {
+  this.status = status;
+  this.errorCode = errorCode;
+}
+
+StorageError.prototype.constructor = StorageError;
+exports.StorageError = StorageError;
+
 function makeHTTPExists(request,baseUrl) {
   return function httpExists(filename, callback){
     request.head([baseUrl, filename].join('/'),function(err,data){
         if(err) {
           if(err.statusCode === 404) {
-            return callback(new Error('notFound'));
+            return callback(new StorageError(404,'notFound'));
           }
           return callback(err);
         }
@@ -37,7 +45,7 @@ function makeS3Exists(s3, path) {
     s3.headObject( params,function(err, data) {
       if (err) {
         if (err.name === 'NotFound') {
-          return callback(new Error('notFound'));
+          return callback(new StorageError(404,'notFound'));
         }
         return callback(err);
       }
@@ -72,7 +80,7 @@ function makeFileSystemExists(path) {
   return function fileSystemExists(filename, callback) {
     fs.stat(path + filename, function (err, stat) {
       if (err) {
-        return callback(new Error('notFound'));
+        return callback(new StorageError(404,'notFound'));
       }
       var fd = fs.createReadStream(path + filename);
       var hash = crypto.createHash('sha1');
