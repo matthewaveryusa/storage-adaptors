@@ -1,6 +1,6 @@
 {
   "name": "storage-adaptors",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "storage adaptors so we can choose between S3, local disk, or an HTTP server easily",
   "main": "./src/storage.js",
   "repository": {
