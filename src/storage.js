@@ -15,18 +15,21 @@ function makeHTTPExists(request,baseUrl) {
     });
   }
 }
+exports.makeHTTPExists = makeHTTPExists;
 
 function makeHTTPRead(request,baseUrl) {
   return function HTTPRead(filename) {
     return request.get([baseUrl, filename].join('/'));
   };
 }
+exports.makeHTTPRead = makeHTTPRead;
 
 function makeHTTPWrite(request,baseUrl) {
   return function HTTPWrite(filename, fileStream, callback) {
     return fileStream.pipe(request.post([baseUrl, filename].join('/')));
   };
 }
+exports.makeHTTPWrite = makeHTTPWrite;
 
 function makeS3Exists(s3, path) {
   return function s3Exists(filename, callback){
