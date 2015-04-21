@@ -1,6 +1,7 @@
 'use strict';
 var fs = require('fs'),
-  crypto = require('crypto');
+  crypto = require('crypto'),
+  aws = require('aws-sdk');
 
 function StorageError(status,errorCode) {
   this.status = status;
@@ -39,8 +40,9 @@ function makeHTTPWrite(request,baseUrl) {
 }
 exports.makeHTTPWrite = makeHTTPWrite;
 
-function makeS3Exists(s3, path) {
+function makeS3Exists(path) {
   return function s3Exists(filename, callback){
+    var s3 = new aws.S3();
     var params = {Bucket: path, Key: filename};
     s3.headObject( params,function(err, data) {
       if (err) {
@@ -61,16 +63,18 @@ function makeS3Exists(s3, path) {
 
 exports.makeS3Exists = makeS3Exists;
 
-function makeS3Read(s3, path) {
+function makeS3Read(path) {
   return function s3Read(filename) {
+    var s3 = new aws.S3();
     return s3.getObject({Bucket: path, Key: filename}).createReadStream();
   };
 }
 
 exports.makeS3Read = makeS3Read;
 
-function makeS3Write(s3, path) {
+function makeS3Write(path) {
   return function s3Write(filename, fileStream, callback) {
+    var s3 = new aws.S3();
     s3.upload({Bucket: path, Key: filename, Body: fileStream}).send(callback);
   };
 }
