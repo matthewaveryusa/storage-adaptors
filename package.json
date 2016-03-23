@@ -1,14 +1,14 @@
 {
   "name": "storage-adaptors",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "storage adaptors so we can choose between S3, local disk, or an HTTP server easily",
   "main": "./src/storage.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/matthewaveryusa/storage-adaptors.git"
   },
-  "author": "Matthew Avery",
-  "license": "Do whatever you want with it.",
+  "author": "Matthew Avery & Zenon Parker",
+  "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/matthewaveryusa/storage-adaptors/issues"
   },

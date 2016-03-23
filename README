@@ -1,0 +1,1 @@
+multiple storage container interfaces that implement very basic semantics: read, write, and something like stat named 'exists' that gives meta information like size, etag (unique hash) and a last modfied timestamp.
