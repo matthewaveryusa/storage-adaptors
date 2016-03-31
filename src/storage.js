@@ -3,20 +3,18 @@ var fs = require('fs'),
   crypto = require('crypto'),
   aws = require('aws-sdk');
 
-function StorageError(status,errorCode) {
-  this.status = status;
-  this.errorCode = errorCode;
+function makeStorageError(status,errorCode) {
+  return {'type':'storageError', 'status':status, 'errorCode':errorCode};
 }
 
-StorageError.prototype.constructor = StorageError;
-exports.StorageError = StorageError;
+exports.makeStorageError = makeStorageError;
 
 function makeHTTPExists(request,baseUrl) {
   return function httpExists(filename, callback){
     request.head([baseUrl, filename].join('/'),function(err,data){
         if(err) {
           if(err.statusCode === 404) {
-            return callback(new StorageError(404,'notFound'));
+            return callback(makeStorageError(404,'notFound'));
           }
           return callback(err);
         }
@@ -47,7 +45,7 @@ function makeS3Exists(path) {
     s3.headObject( params,function(err, data) {
       if (err) {
         if (err.name === 'NotFound') {
-          return callback(new StorageError(404,'notFound'));
+          return callback(makeStorageError(404,'notFound'));
         }
         return callback(err);
       }
@@ -84,11 +82,11 @@ function makeFileSystemExists(path) {
   return function fileSystemExists(filename, callback) {
     fs.stat(path + filename, function (err, stat) {
       if (err) {
-        return callback(new StorageError(404,'notFound'));
+        return callback(makeStorageError(404,'notFound'));
       }
 
       if (!stat.isFile()) {
-        return callback(new StorageError(404,'notFound'));
+        return callback(makeStorageError(404,'notFound'));
       }
 
       var fd = fs.createReadStream(path + filename);
