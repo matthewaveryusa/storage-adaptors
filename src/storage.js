@@ -86,6 +86,11 @@ function makeFileSystemExists(path) {
       if (err) {
         return callback(new StorageError(404,'notFound'));
       }
+
+      if (!stat.isFile()) {
+        return callback(new StorageError(404,'notFound'));
+      }
+
       var fd = fs.createReadStream(path + filename);
       var hash = crypto.createHash('sha1');
       hash.setEncoding('hex');
